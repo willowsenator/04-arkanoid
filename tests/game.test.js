@@ -20,6 +20,16 @@ test('movePaddleBy moves the paddle by the requested distance', () => {
   assert.equal(game.state.paddle.x, before + 20);
 });
 
+test('movePaddleBy and setPaddleX are ignored when the game is not playing', () => {
+  const game = makeGame();
+  game.state.status = 'gameover';
+  const before = game.state.paddle.x;
+  game.movePaddleBy(20);
+  assert.equal(game.state.paddle.x, before);
+  game.setPaddleX(before + 50);
+  assert.equal(game.state.paddle.x, before);
+});
+
 test('update moves the ball and leaves status playing with no collisions', () => {
   const game = makeGame();
   const startY = game.state.ball.y;

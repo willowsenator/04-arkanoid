@@ -61,10 +61,12 @@
     game.state = createInitialState();
 
     game.movePaddleBy = function (dx) {
+      if (game.state.status !== 'playing') return;
       game.state.paddle.moveBy(dx);
     };
 
     game.setPaddleX = function (x) {
+      if (game.state.status !== 'playing') return;
       game.state.paddle.setX(x);
     };
 
