@@ -30,6 +30,16 @@ test('movePaddleBy and setPaddleX are ignored when the game is not playing', () 
   assert.equal(game.state.paddle.x, before);
 });
 
+test('movePaddleBy and setPaddleX are ignored while the paddle is destroying', () => {
+  const game = makeGame();
+  game.state.status = 'paddle-destroying';
+  const before = game.state.paddle.x;
+  game.movePaddleBy(20);
+  assert.equal(game.state.paddle.x, before);
+  game.setPaddleX(before + 50);
+  assert.equal(game.state.paddle.x, before);
+});
+
 test('update moves the ball and leaves status playing with no collisions', () => {
   const game = makeGame();
   const startY = game.state.ball.y;
@@ -103,6 +113,8 @@ test('ball passing below the paddle costs a life and resets the ball', () => {
   assert.equal(game.state.lives, 2);
   assert.equal(game.state.status, 'playing');
   assert.ok(game.state.ball.y < paddle.y);
+  assert.equal(game.state.paddle.destroyed, false);
+  assert.deepEqual(game.state.paddleFragments, []);
 });
 
 test('losing the last life starts the paddle-destroying animation instead of ending immediately', () => {

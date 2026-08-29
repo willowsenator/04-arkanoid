@@ -78,7 +78,8 @@
         paddle: paddle,
         ball: ball,
         bricks: Bricks.createGrid(BRICK_CONFIG),
-        paddleFragments: []
+        paddleFragments: [],
+        destroyTimer: 0
       };
     }
 
