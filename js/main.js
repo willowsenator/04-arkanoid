@@ -35,7 +35,14 @@
 
     const paddle = game.state.paddle;
     ctx.fillStyle = '#0af';
-    ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+    if (!paddle.destroyed) {
+      ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+    }
+    if (game.state.status === 'paddle-destroying') {
+      game.state.paddleFragments.forEach(function (fragment) {
+        ctx.fillRect(fragment.x, fragment.y, fragment.width, fragment.height);
+      });
+    }
 
     const ball = game.state.ball;
     ctx.beginPath();
