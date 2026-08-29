@@ -105,7 +105,7 @@ test('ball passing below the paddle costs a life and resets the ball', () => {
   assert.ok(game.state.ball.y < paddle.y);
 });
 
-test('losing the last life ends the game', () => {
+test('losing the last life starts the paddle-destroying animation instead of ending immediately', () => {
   const game = makeGame();
   game.state.lives = 1;
   const paddle = game.state.paddle;
@@ -115,7 +115,58 @@ test('losing the last life ends the game', () => {
   game.state.ball.vy = 50;
   game.update(0.001);
   assert.equal(game.state.lives, 0);
+  assert.equal(game.state.status, 'paddle-destroying');
+  assert.equal(paddle.destroyed, true);
+  assert.equal(game.state.paddleFragments.length, 4);
+});
+
+test('update freezes the ball and paddle while the paddle is destroying', () => {
+  const game = makeGame();
+  game.state.status = 'paddle-destroying';
+  game.state.destroyTimer = 0.6;
+  game.state.paddleFragments = [];
+  const ball = game.state.ball;
+  const before = { x: ball.x, y: ball.y, vx: ball.vx, vy: ball.vy };
+  game.update(0.1);
+  assert.deepEqual({ x: ball.x, y: ball.y, vx: ball.vx, vy: ball.vy }, before);
+});
+
+test('update advances paddle fragments outward while destroying', () => {
+  const game = makeGame();
+  game.state.status = 'paddle-destroying';
+  game.state.destroyTimer = 0.6;
+  game.state.paddleFragments = [{ x: 100, y: 200, width: 20, height: 10, vx: 30, vy: -50 }];
+  game.update(0.1);
+  const fragment = game.state.paddleFragments[0];
+  assert.equal(fragment.x, 103);
+  assert.equal(Math.round(fragment.y * 10) / 10, 195);
+});
+
+test('the destruction animation ends after its fixed duration and reaches gameover', () => {
+  const game = makeGame();
+  game.state.status = 'paddle-destroying';
+  game.state.destroyTimer = 0.6;
+  game.state.paddleFragments = [];
+  game.update(0.5);
+  assert.equal(game.state.status, 'paddle-destroying');
+  game.update(0.2);
   assert.equal(game.state.status, 'gameover');
+  assert.equal(game.state.paddle.destroyed, true);
+});
+
+test('reset clears the destroyed paddle and fragments', () => {
+  const game = makeGame();
+  game.state.lives = 1;
+  const paddle = game.state.paddle;
+  game.state.ball.x = paddle.x + paddle.width / 2;
+  game.state.ball.y = paddle.y + paddle.height + 1;
+  game.state.ball.vx = 0;
+  game.state.ball.vy = 50;
+  game.update(0.001);
+  game.reset();
+  assert.equal(game.state.status, 'playing');
+  assert.equal(game.state.paddle.destroyed, false);
+  assert.deepEqual(game.state.paddleFragments, []);
 });
 
 test('clearing every brick wins the game', () => {

@@ -29,6 +29,29 @@
     offsetTop: 40,
     offsetLeft: 20
   };
+  const PADDLE_DESTROY_DURATION = 0.6;
+  const FRAGMENT_COLS = 4;
+  const FRAGMENT_OUTWARD_SPEED = 3;
+  const FRAGMENT_RISE_SPEED = 100;
+
+  function createPaddleFragments(paddle) {
+    const fragmentWidth = paddle.width / FRAGMENT_COLS;
+    const centerX = paddle.x + paddle.width / 2;
+    const fragments = [];
+    for (let i = 0; i < FRAGMENT_COLS; i++) {
+      const x = paddle.x + i * fragmentWidth;
+      const offsetFromCenter = (x + fragmentWidth / 2) - centerX;
+      fragments.push({
+        x: x,
+        y: paddle.y,
+        width: fragmentWidth,
+        height: paddle.height,
+        vx: offsetFromCenter * FRAGMENT_OUTWARD_SPEED,
+        vy: -FRAGMENT_RISE_SPEED
+      });
+    }
+    return fragments;
+  }
 
   function create(options) {
     const game = {};
@@ -54,7 +77,8 @@
         lives: options.lives,
         paddle: paddle,
         ball: ball,
-        bricks: Bricks.createGrid(BRICK_CONFIG)
+        bricks: Bricks.createGrid(BRICK_CONFIG),
+        paddleFragments: []
       };
     }
 
@@ -72,10 +96,24 @@
 
     game.update = function (dt) {
       const state = game.state;
-      const ball = state.ball;
-      const paddle = state.paddle;
+
+      if (state.status === 'paddle-destroying') {
+        state.paddle.destroyed = true;
+        state.destroyTimer -= dt;
+        state.paddleFragments.forEach(function (fragment) {
+          fragment.x += fragment.vx * dt;
+          fragment.y += fragment.vy * dt;
+        });
+        if (state.destroyTimer <= 0) {
+          state.status = 'gameover';
+        }
+        return;
+      }
 
       if (state.status !== 'playing') return;
+
+      const ball = state.ball;
+      const paddle = state.paddle;
 
       ball.update(dt);
       ball.bounceOffWalls(options.canvasWidth);
@@ -83,7 +121,10 @@
       if (ball.y > paddle.y + paddle.height) {
         state.lives -= 1;
         if (state.lives <= 0) {
-          state.status = 'gameover';
+          paddle.destroyed = true;
+          state.paddleFragments = createPaddleFragments(paddle);
+          state.status = 'paddle-destroying';
+          state.destroyTimer = PADDLE_DESTROY_DURATION;
         } else {
           ball.reset(
             paddle.x + paddle.width / 2,
