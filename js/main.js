@@ -10,6 +10,26 @@
     lives: 3
   });
 
+  function drawHeart(cx, cy, size) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + size * 0.3);
+    ctx.bezierCurveTo(cx, cy, cx - size / 2, cy, cx - size / 2, cy + size * 0.3);
+    ctx.bezierCurveTo(cx - size / 2, cy + size * 0.7, cx, cy + size, cx, cy + size * 1.2);
+    ctx.bezierCurveTo(cx, cy + size, cx + size / 2, cy + size * 0.7, cx + size / 2, cy + size * 0.3);
+    ctx.bezierCurveTo(cx + size / 2, cy, cx, cy, cx, cy + size * 0.3);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawLives(lives) {
+    ctx.fillStyle = '#e33';
+    const size = 14;
+    const spacing = 20;
+    for (let i = 0; i < lives; i++) {
+      drawHeart(16 + i * spacing, 8, size);
+    }
+  }
+
   function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -29,9 +49,7 @@
       ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
     });
 
-    ctx.fillStyle = '#eee';
-    ctx.font = '16px sans-serif';
-    ctx.fillText('Lives: ' + game.state.lives, 10, 20);
+    drawLives(game.state.lives);
 
     if (game.state.status === 'gameover') {
       overlay.textContent = 'Game Over';
