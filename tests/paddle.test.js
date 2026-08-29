@@ -37,3 +37,8 @@ test('getBounds returns the current rect', () => {
   const paddle = makePaddle();
   assert.deepEqual(paddle.getBounds(), { x: 280, y: 450, width: 80, height: 10 });
 });
+
+test('a newly created paddle is not destroyed', () => {
+  const paddle = makePaddle();
+  assert.equal(paddle.destroyed, false);
+});

@@ -12,7 +12,8 @@
       y: options.y,
       width: options.width,
       height: options.height,
-      canvasWidth: options.canvasWidth
+      canvasWidth: options.canvasWidth,
+      destroyed: false
     };
 
     paddle.setX = function (x) {
