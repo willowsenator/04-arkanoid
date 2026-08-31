@@ -166,7 +166,7 @@
       const brick = Bricks.findCollidingBrick(state.bricks, ball);
       if (brick) {
         brick.destroyed = true;
-        state.score += ROW_VALUES[brick.row];
+        state.score += ROW_VALUES[brick.row] || 0;
         const collision = Geometry.circleRectCollision(ball, brick);
         const velocity = Geometry.reflect(ball.vx, ball.vy, collision.side);
         ball.vx = velocity.vx;
