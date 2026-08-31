@@ -28,6 +28,14 @@
     }
   }
 
+  function drawScore(score) {
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('Score: ' + score, canvas.width - 12, 8);
+  }
+
   function render() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -55,6 +63,7 @@
     });
 
     drawLives(game.state.lives);
+    drawScore(game.state.score);
 
     if (game.state.status === 'gameover' || game.state.status === 'win') {
       const message = game.state.status === 'gameover' ? 'Game Over' : 'You Win!';
