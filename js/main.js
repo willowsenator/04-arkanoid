@@ -1,8 +1,6 @@
 (function () {
   const canvas = document.getElementById('game-canvas');
   const ctx = canvas.getContext('2d');
-  const overlay = document.getElementById('overlay');
-  const restartButton = document.getElementById('restart');
 
   const game = window.Arkanoid.Game.create({
     canvasWidth: canvas.width,
@@ -58,15 +56,21 @@
 
     drawLives(game.state.lives);
 
-    if (game.state.status === 'gameover') {
-      overlay.textContent = 'Game Over';
-      restartButton.style.display = 'inline-block';
-    } else if (game.state.status === 'win') {
-      overlay.textContent = 'You Win!';
-      restartButton.style.display = 'inline-block';
-    } else {
-      overlay.textContent = '';
-      restartButton.style.display = 'none';
+    if (game.state.status === 'gameover' || game.state.status === 'win') {
+      const message = game.state.status === 'gameover' ? 'Game Over' : 'You Win!';
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+      ctx.fillRect(0, canvas.height / 2 - 40, canvas.width, 80);
+
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      ctx.font = 'bold 28px sans-serif';
+      ctx.fillText(message, canvas.width / 2, canvas.height / 2 - 10);
+
+      ctx.font = '16px sans-serif';
+      ctx.fillText('Press Enter or Space to restart', canvas.width / 2, canvas.height / 2 + 20);
     }
   }
 
@@ -86,6 +90,11 @@
   const PADDLE_KEY_SPEED = 400;
 
   document.addEventListener('keydown', function (event) {
+    if (window.Arkanoid.Restart.canRestart(game.state.status) && window.Arkanoid.Restart.isRestartKey(event.key)) {
+      event.preventDefault();
+      game.reset();
+      return;
+    }
     if (event.key === 'ArrowLeft' || event.key === 'a' || event.key === 'A') keyState.left = true;
     if (event.key === 'ArrowRight' || event.key === 'd' || event.key === 'D') keyState.right = true;
   });
@@ -99,10 +108,6 @@
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     game.setPaddleX(mouseX - game.state.paddle.width / 2);
-  });
-
-  restartButton.addEventListener('click', function () {
-    game.reset();
   });
 
   const keyLoopInterval = 1000 / 60;
