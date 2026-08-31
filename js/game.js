@@ -33,6 +33,7 @@
   const FRAGMENT_COLS = 4;
   const FRAGMENT_OUTWARD_SPEED = 3;
   const FRAGMENT_RISE_SPEED = 100;
+  const ROW_VALUES = [40, 30, 20, 10];
 
   function createPaddleFragments(paddle) {
     const fragmentWidth = paddle.width / FRAGMENT_COLS;
@@ -75,6 +76,7 @@
       return {
         status: 'playing',
         lives: options.lives,
+        score: 0,
         paddle: paddle,
         ball: ball,
         bricks: Bricks.createGrid(BRICK_CONFIG),
@@ -153,6 +155,7 @@
       const brick = Bricks.findCollidingBrick(state.bricks, ball);
       if (brick) {
         brick.destroyed = true;
+        state.score += ROW_VALUES[brick.row];
         const collision = Geometry.circleRectCollision(ball, brick);
         const velocity = Geometry.reflect(ball.vx, ball.vy, collision.side);
         ball.vx = velocity.vx;

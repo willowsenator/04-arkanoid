@@ -198,3 +198,34 @@ test('reset restores initial lives, bricks, and playing status', () => {
   assert.equal(game.state.lives, 3);
   assert.ok(game.state.bricks.every(function (b) { return b.destroyed === false; }));
 });
+
+test('starts with a score of 0', () => {
+  const game = makeGame();
+  assert.equal(game.state.score, 0);
+});
+
+test('destroying a top-row brick awards 40 points', () => {
+  const game = makeGame();
+  const brick = game.state.bricks.find(function (b) { return b.row === 0; });
+  const ball = game.state.ball;
+  ball.x = brick.x + brick.width / 2;
+  ball.y = brick.y + brick.height / 2;
+  ball.vx = 0;
+  ball.vy = -10;
+  game.update(0);
+  assert.equal(brick.destroyed, true);
+  assert.equal(game.state.score, 40);
+});
+
+test('destroying a bottom-row brick awards 10 points', () => {
+  const game = makeGame();
+  const brick = game.state.bricks.find(function (b) { return b.row === 3; });
+  const ball = game.state.ball;
+  ball.x = brick.x + brick.width / 2;
+  ball.y = brick.y + brick.height / 2;
+  ball.vx = 0;
+  ball.vy = -10;
+  game.update(0);
+  assert.equal(brick.destroyed, true);
+  assert.equal(game.state.score, 10);
+});
