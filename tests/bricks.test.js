@@ -13,9 +13,9 @@ test('createGrid lays out the expected number of non-destroyed bricks', () => {
   const bricks = makeGrid();
   assert.equal(bricks.length, 4);
   assert.ok(bricks.every(function (b) { return b.destroyed === false; }));
-  assert.deepEqual(bricks[0], { x: 10, y: 10, width: 50, height: 20, destroyed: false });
-  assert.deepEqual(bricks[1], { x: 65, y: 10, width: 50, height: 20, destroyed: false });
-  assert.deepEqual(bricks[2], { x: 10, y: 35, width: 50, height: 20, destroyed: false });
+  assert.deepEqual(bricks[0], { x: 10, y: 10, width: 50, height: 20, destroyed: false, row: 0 });
+  assert.deepEqual(bricks[1], { x: 65, y: 10, width: 50, height: 20, destroyed: false, row: 0 });
+  assert.deepEqual(bricks[2], { x: 10, y: 35, width: 50, height: 20, destroyed: false, row: 1 });
 });
 
 test('remainingCount only counts non-destroyed bricks', () => {

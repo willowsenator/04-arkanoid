@@ -15,7 +15,8 @@
           y: options.offsetTop + row * (options.brickHeight + options.padding),
           width: options.brickWidth,
           height: options.brickHeight,
-          destroyed: false
+          destroyed: false,
+          row: row
         });
       }
     }
