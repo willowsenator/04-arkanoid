@@ -278,3 +278,10 @@ test('penalty falls within the expected first-loss range using the default rando
   const penalty = 1000 - game.state.score;
   assert.ok(penalty >= 10 && penalty <= 30);
 });
+
+test('reset restores score to zero', () => {
+  const game = makeGame();
+  game.state.score = 500;
+  game.reset();
+  assert.equal(game.state.score, 0);
+});
