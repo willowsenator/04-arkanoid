@@ -229,3 +229,52 @@ test('destroying a bottom-row brick awards 10 points', () => {
   assert.equal(brick.destroyed, true);
   assert.equal(game.state.score, 10);
 });
+
+function loseOneLife(game) {
+  const paddle = game.state.paddle;
+  game.state.ball.x = paddle.x + paddle.width / 2;
+  game.state.ball.y = paddle.y + paddle.height + 1;
+  game.state.ball.vx = 0;
+  game.state.ball.vy = 50;
+  game.update(0.001);
+}
+
+test('losing a life deducts a penalty from the range for the first loss', () => {
+  const game = Game.create({
+    canvasWidth: 640, canvasHeight: 480, lives: 3,
+    random: function () { return 0; }
+  });
+  game.state.score = 100;
+  loseOneLife(game);
+  assert.equal(game.state.score, 90);
+});
+
+test('the penalty range grows by 10 for each life already lost this game', () => {
+  const game = Game.create({
+    canvasWidth: 640, canvasHeight: 480, lives: 3,
+    random: function () { return 0; }
+  });
+  game.state.score = 200;
+  loseOneLife(game);
+  assert.equal(game.state.score, 190);
+  loseOneLife(game);
+  assert.equal(game.state.score, 170);
+});
+
+test('score never drops below zero from a penalty', () => {
+  const game = Game.create({
+    canvasWidth: 640, canvasHeight: 480, lives: 3,
+    random: function () { return 0.5; }
+  });
+  game.state.score = 5;
+  loseOneLife(game);
+  assert.equal(game.state.score, 0);
+});
+
+test('penalty falls within the expected first-loss range using the default random source', () => {
+  const game = makeGame();
+  game.state.score = 1000;
+  loseOneLife(game);
+  const penalty = 1000 - game.state.score;
+  assert.ok(penalty >= 10 && penalty <= 30);
+});

@@ -54,8 +54,15 @@
     return fragments;
   }
 
+  function randomPenalty(livesAlreadyLost, randomFn) {
+    const min = 10 + 10 * livesAlreadyLost;
+    const max = 30 + 10 * livesAlreadyLost;
+    return min + Math.floor(randomFn() * (max - min + 1));
+  }
+
   function create(options) {
     const game = {};
+    const randomFn = options.random || Math.random;
 
     function createInitialState() {
       const paddle = Paddle.create({
@@ -77,6 +84,7 @@
         status: 'playing',
         lives: options.lives,
         score: 0,
+        livesLost: 0,
         paddle: paddle,
         ball: ball,
         bricks: Bricks.createGrid(BRICK_CONFIG),
@@ -123,6 +131,9 @@
 
       if (ball.y > paddle.y + paddle.height) {
         state.lives -= 1;
+        const penalty = randomPenalty(state.livesLost, randomFn);
+        state.score = Math.max(0, state.score - penalty);
+        state.livesLost += 1;
         if (state.lives <= 0) {
           paddle.destroyed = true;
           state.paddleFragments = createPaddleFragments(paddle);
