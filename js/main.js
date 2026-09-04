@@ -97,6 +97,12 @@
     }
   }
 
+  function resumeAudioIfSuspended() {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
   function countDestroyedBricks(bricks) {
     return bricks.reduce(function (count, brick) {
       return brick.destroyed ? count + 1 : count;
@@ -239,9 +245,7 @@
   const PADDLE_KEY_SPEED = 400;
 
   document.addEventListener('keydown', function (event) {
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
+    resumeAudioIfSuspended();
     if (window.Arkanoid.Restart.canRestart(game.state.status) && window.Arkanoid.Restart.isRestartKey(event.key)) {
       event.preventDefault();
       game.reset();
@@ -265,9 +269,7 @@
   });
 
   canvas.addEventListener('mousemove', function (event) {
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
+    resumeAudioIfSuspended();
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     game.setPaddleX(mouseX - game.state.paddle.width / 2);
