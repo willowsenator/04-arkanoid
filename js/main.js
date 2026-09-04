@@ -8,9 +8,16 @@
     lives: 3
   });
 
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let audioCtx = null;
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (Ctx) audioCtx = new Ctx();
+  } catch (err) {
+    audioCtx = null;
+  }
 
   function playTone(frequency, duration, options) {
+    if (!audioCtx) return 0;
     options = options || {};
     const type = options.type || 'sine';
     const startTime = audioCtx.currentTime + (options.delay || 0);
@@ -77,6 +84,7 @@
   }
 
   function startMusic() {
+    if (!audioCtx) return;
     if (musicTimer !== null) return;
     musicStep = 0;
     scheduleMusicStep();
@@ -231,6 +239,9 @@
   const PADDLE_KEY_SPEED = 400;
 
   document.addEventListener('keydown', function (event) {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
     if (window.Arkanoid.Restart.canRestart(game.state.status) && window.Arkanoid.Restart.isRestartKey(event.key)) {
       event.preventDefault();
       game.reset();
@@ -254,6 +265,9 @@
   });
 
   canvas.addEventListener('mousemove', function (event) {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
     const rect = canvas.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
     game.setPaddleX(mouseX - game.state.paddle.width / 2);
