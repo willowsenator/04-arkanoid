@@ -105,6 +105,16 @@
       game.state.paddle.setX(x);
     };
 
+    game.pause = function () {
+      if (game.state.status !== 'playing') return;
+      game.state.status = 'paused';
+    };
+
+    game.resume = function () {
+      if (game.state.status !== 'paused') return;
+      game.state.status = 'playing';
+    };
+
     game.update = function (dt) {
       const state = game.state;
 

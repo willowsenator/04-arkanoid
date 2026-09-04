@@ -285,3 +285,53 @@ test('reset restores score to zero', () => {
   game.reset();
   assert.equal(game.state.score, 0);
 });
+
+test('pause transitions playing to paused', () => {
+  const game = makeGame();
+  game.pause();
+  assert.equal(game.state.status, 'paused');
+});
+
+test('pause is a no-op when the game is not playing', () => {
+  const game = makeGame();
+  game.state.status = 'gameover';
+  game.pause();
+  assert.equal(game.state.status, 'gameover');
+});
+
+test('resume transitions paused back to playing', () => {
+  const game = makeGame();
+  game.pause();
+  game.resume();
+  assert.equal(game.state.status, 'playing');
+});
+
+test('resume is a no-op when the game is not paused', () => {
+  const game = makeGame();
+  game.resume();
+  assert.equal(game.state.status, 'playing');
+});
+
+test('update is a complete no-op while paused', () => {
+  const game = makeGame();
+  const ball = game.state.ball;
+  const paddle = game.state.paddle;
+  const before = { x: ball.x, y: ball.y, vx: ball.vx, vy: ball.vy, paddleX: paddle.x };
+  game.pause();
+  game.update(1);
+  assert.deepEqual(
+    { x: ball.x, y: ball.y, vx: ball.vx, vy: ball.vy, paddleX: paddle.x },
+    before
+  );
+  assert.equal(game.state.status, 'paused');
+});
+
+test('movePaddleBy and setPaddleX are ignored while paused', () => {
+  const game = makeGame();
+  game.pause();
+  const before = game.state.paddle.x;
+  game.movePaddleBy(20);
+  assert.equal(game.state.paddle.x, before);
+  game.setPaddleX(before + 50);
+  assert.equal(game.state.paddle.x, before);
+});
