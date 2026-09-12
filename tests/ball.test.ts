@@ -1,7 +1,6 @@
-// tests/ball.test.js
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const Ball = require('../js/ball.js');
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import * as Ball from '../js/ball.js';
 
 test('update moves the ball by velocity * dt', () => {
   const ball = Ball.create({ x: 320, y: 470, radius: 6, vx: 0, vy: -240 });
