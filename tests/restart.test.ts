@@ -1,6 +1,6 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const Restart = require('../js/restart.js');
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import * as Restart from '../js/restart.js';
 
 test('isRestartKey returns true for Enter', () => {
   assert.equal(Restart.isRestartKey('Enter'), true);
