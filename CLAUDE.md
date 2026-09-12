@@ -4,44 +4,58 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A vanilla-JS Arkanoid/breakout clone rendered on an HTML5 canvas. No build step, no bundler, no package.json — `index.html` loads each module as a plain `<script>` tag in dependency order and runs off `window.Arkanoid`.
+A vanilla-JS Arkanoid/breakout clone rendered on an HTML5 canvas. No build step, no bundler — `index.html` loads a single `<script type="module" src="js/main.js">`, and every module in `js/` is a native ES module (`import`/`export`) that Node and the browser both load directly with no transpilation. `package.json` exists only to pull in `@types/node` as a `devDependency` for editor/`tsc --noEmit` type-checking of the TypeScript test suite — it declares no `scripts` and is never required to run the game or the tests.
 
 ## Commands
 
 Run all tests:
 
 ```
-node --test tests/
+node --test 'tests/*.test.ts'
 ```
+
+(A bare `node --test tests/` directory path does not reliably work across Node versions —
+use the glob form above, or run bare `node --test` from the project root.)
 
 Run a single test file:
 
 ```
-node --test tests/ball.test.js
+node --test tests/ball.test.ts
 ```
 
-There is no lint/build command and no `package.json` — don't assume npm scripts exist.
+Tests are TypeScript (`tests/*.test.ts`), run directly by Node's native TypeScript support
+(type stripping) — no `tsc` compile step and no `ts-node`. This requires a Node version with
+unflagged native TypeScript support (verified on v24.11.1); `npx tsc --noEmit` optionally
+type-checks the test suite using the `@types/node` devDependency in `package.json`, but
+that check is never required to run the tests or the game.
 
-To view the game itself, open `index.html` directly in a browser (or serve the directory statically); there's no dev server.
+There is no lint/build command and no npm `scripts` — don't assume npm scripts exist beyond
+what `npm install` pulls in for type-checking.
+
+To view the game itself, serve the directory statically (e.g. `python3 -m http.server`) and
+open it in a browser — `index.html` loads `js/main.js` as an ES module, and module scripts
+are blocked by CORS when opened directly via `file://` in current browsers, so a local
+server is required (there's still no dev server beyond that).
 
 ## Architecture
 
-Each module in `js/` is a dual CommonJS/browser-global UMD wrapper:
+Each module in `js/` is a native ES module:
 
 ```js
-(function (root, factory) {
-  if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('./other.js'));   // Node (tests)
-  } else {
-    root.Arkanoid = root.Arkanoid || {};
-    root.Arkanoid.Thing = factory(root.Arkanoid.Other); // Browser global
-  }
-})(typeof self !== 'undefined' ? self : this, function (Other) { ... });
+import * as Other from './other.js';
+
+export function thing() { ... }
 ```
 
-This lets `tests/*.test.js` `require()` the same files `index.html` loads as scripts, with no transpilation. When adding a new module, follow this exact wrapper and add its `<script>` tag to `index.html` in dependency order (dependencies before dependents), and require it explicitly in any module/factory that needs it.
+Both Node (via `tests/*.test.ts`, using native TypeScript type stripping) and the browser
+(via `index.html`'s single `<script type="module" src="js/main.js">`) load these files
+directly with no transpilation — the browser's import graph resolves dependency order on
+its own. When adding a new module, `export` its public API and `import` whatever sibling
+modules it needs; no `<script>` tag or dependency-order bookkeeping in `index.html` is
+required for anything but `main.js` itself.
 
-Module responsibilities, load order in `index.html`:
+Module responsibilities (dependency order — each imports only what's listed as a
+dependency; only `main.js` is loaded directly by `index.html`, as an ES module):
 
 1. **`geometry.js`** — pure math: `clamp`, `circleRectCollision` (circle-vs-rect hit test with side detection), `reflect` (flip vx/vy by hit side), `paddleBounceVelocity` (angle the ball off paddle-hit position, preserving speed). No dependencies.
 2. **`restart.js`** — pure restart-trigger logic: `isRestartKey(key)` (true for Enter/Space) and `canRestart(status)` (true for `'gameover'`/`'win'`). No dependencies.
