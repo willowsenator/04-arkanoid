@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A vanilla-JS Arkanoid/breakout clone rendered on an HTML5 canvas. No build step, no bundler — `index.html` loads a single `<script type="module" src="js/main.js">`, and every module in `js/` is a native ES module (`import`/`export`) that Node and the browser both load directly with no transpilation. `package.json` exists only to pull in `@types/node` as a `devDependency` for editor/`tsc --noEmit` type-checking of the TypeScript test suite — it declares no `scripts` and is never required to run the game or the tests.
+A vanilla-JS Arkanoid/breakout clone rendered on an HTML5 canvas. No build step, no bundler — `index.html` loads a single `<script type="module" src="js/main.js">`, and every module in `js/` is a native ES module (`import`/`export`) that Node and the browser both load directly with no transpilation. `package.json` exists only to pull in `@types/node` and `typescript` as `devDependencies` for editor/`tsc --noEmit` type-checking of the TypeScript test suite — it declares no `scripts` and is never required to run the game or the tests.
 
 ## Commands
 
@@ -29,8 +29,10 @@ unflagged native TypeScript support (verified on v24.11.1); `npx tsc --noEmit` o
 type-checks the test suite using the `@types/node` devDependency in `package.json`, but
 that check is never required to run the tests or the game.
 
-There is no lint/build command and no npm `scripts` — don't assume npm scripts exist beyond
-what `npm install` pulls in for type-checking.
+There is no lint/build command and no npm `scripts` — don't assume any exist. Running the
+game or the tests needs nothing installed; `npm install` is only a one-time prerequisite for
+the optional `npx tsc --noEmit` type-check, to pull in the `@types/node` and `typescript`
+devDependencies it needs.
 
 To view the game itself, serve the directory statically (e.g. `python3 -m http.server`) and
 open it in a browser — `index.html` loads `js/main.js` as an ES module, and module scripts
