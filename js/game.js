@@ -3,43 +3,6 @@ import * as Paddle from './paddle.js';
 import * as Ball from './ball.js';
 import * as Bricks from './bricks.js';
 
-/**
- * @typedef {{
- *   x: number,
- *   y: number,
- *   width: number,
- *   height: number,
- *   vx: number,
- *   vy: number
- * }} PaddleFragment
- */
-
-/**
- * @typedef {{
- *   status: string,
- *   lives: number,
- *   score: number,
- *   livesLost: number,
- *   paddle: any,
- *   ball: any,
- *   bricks: any[],
- *   paddleFragments: PaddleFragment[],
- *   destroyTimer: number
- * }} GameState
- */
-
-/**
- * @typedef {{
- *   state: GameState,
- *   movePaddleBy: (dx: number) => void,
- *   setPaddleX: (x: number) => void,
- *   pause: () => void,
- *   resume: () => void,
- *   update: (dt: number) => void,
- *   reset: () => void
- * }} Game
- */
-
 const BALL_SPEED = 240;
 const PADDLE_WIDTH = 80;
 const PADDLE_HEIGHT = 10;
@@ -84,10 +47,6 @@ function randomPenalty(livesAlreadyLost, randomFn) {
   return min + Math.floor(randomFn() * (max - min + 1));
 }
 
-/**
- * @param {{canvasWidth: number, canvasHeight: number, lives: number, random?: () => number}} options
- * @returns {Game}
- */
 export function create(options) {
   const game = {};
   const randomFn = options.random || Math.random;

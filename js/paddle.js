@@ -1,23 +1,5 @@
 import * as Geometry from './geometry.js';
 
-/**
- * @typedef {{
- *   x: number,
- *   y: number,
- *   width: number,
- *   height: number,
- *   canvasWidth: number,
- *   destroyed: boolean,
- *   setX: (x: number) => void,
- *   moveBy: (dx: number) => void,
- *   getBounds: () => {x: number, y: number, width: number, height: number}
- * }} Paddle
- */
-
-/**
- * @param {{x: number, y: number, width: number, height: number, canvasWidth: number}} options
- * @returns {Paddle}
- */
 export function create(options) {
   const paddle = {
     x: options.x,

@@ -230,7 +230,7 @@ test('destroying a bottom-row brick awards 10 points', () => {
   assert.equal(game.state.score, 10);
 });
 
-function loseOneLife(game: any) {
+function loseOneLife(game) {
   const paddle = game.state.paddle;
   game.state.ball.x = paddle.x + paddle.width / 2;
   game.state.ball.y = paddle.y + paddle.height + 1;

@@ -1,20 +1,3 @@
-/**
- * @typedef {{
- *   x: number,
- *   y: number,
- *   radius: number,
- *   vx: number,
- *   vy: number,
- *   update: (dt: number) => void,
- *   bounceOffWalls: (canvasWidth: number) => void,
- *   reset: (x: number, y: number, vx: number, vy: number) => void
- * }} Ball
- */
-
-/**
- * @param {{x: number, y: number, radius: number, vx: number, vy: number}} options
- * @returns {Ball}
- */
 export function create(options) {
   const ball = {
     x: options.x,
