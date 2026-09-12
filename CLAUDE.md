@@ -67,4 +67,4 @@ dependency; only `main.js` is loaded directly by `index.html`, as an ES module):
 
 State flows one way: input handlers (`main.js`) call `game.movePaddleBy`/`setPaddleX`, the RAF loop calls `game.update(dt)` each frame, and `main.js` reads `game.state` afterward to render. Entities (`paddle`, `ball`, `bricks`) never reach back into `game` or `main`.
 
-Tests mirror this structure 1:1 (`tests/<module>.test.js` per `js/<module>.js`), using `node:test` + `node:assert/strict`, no mocking framework.
+Tests mirror this structure 1:1 (`tests/<module>.test.ts` per `js/<module>.js`), using `node:test` + `node:assert/strict`, no mocking framework.
