@@ -1,6 +1,7 @@
 {
   "name": "arkanoid",
   "private": true,
+  "type": "module",
   "devDependencies": {
     "typescript": "^5.7.0",
     "@types/node": "^24.0.0"
