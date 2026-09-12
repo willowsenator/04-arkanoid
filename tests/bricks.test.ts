@@ -1,6 +1,6 @@
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const Bricks = require('../js/bricks.js');
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import * as Bricks from '../js/bricks.js';
 
 function makeGrid() {
   return Bricks.createGrid({
