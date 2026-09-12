@@ -1,7 +1,6 @@
-// tests/paddle.test.js
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const Paddle = require('../js/paddle.js');
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import * as Paddle from '../js/paddle.js';
 
 function makePaddle() {
   return Paddle.create({ x: 280, y: 450, width: 80, height: 10, canvasWidth: 640 });
