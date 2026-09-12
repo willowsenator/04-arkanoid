@@ -1,7 +1,18 @@
+/**
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
 export function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+/**
+ * @param {{x: number, y: number, radius: number}} circle
+ * @param {{x: number, y: number, width: number, height: number}} rect
+ * @returns {{hit: boolean, side: string | null}}
+ */
 export function circleRectCollision(circle, rect) {
   const closestX = clamp(circle.x, rect.x, rect.x + rect.width);
   const closestY = clamp(circle.y, rect.y, rect.y + rect.height);
@@ -28,6 +39,12 @@ export function circleRectCollision(circle, rect) {
   return { hit: true, side: side };
 }
 
+/**
+ * @param {number} vx
+ * @param {number} vy
+ * @param {string} side
+ * @returns {{vx: number, vy: number}}
+ */
 export function reflect(vx, vy, side) {
   if (side === 'top' || side === 'bottom') {
     return { vx: vx, vy: -vy };
@@ -35,6 +52,13 @@ export function reflect(vx, vy, side) {
   return { vx: -vx, vy: vy };
 }
 
+/**
+ * @param {number} hitX
+ * @param {number} paddleX
+ * @param {number} paddleWidth
+ * @param {number} speed
+ * @returns {{vx: number, vy: number}}
+ */
 export function paddleBounceVelocity(hitX, paddleX, paddleWidth, speed) {
   const paddleCenter = paddleX + paddleWidth / 2;
   const rawOffset = (hitX - paddleCenter) / (paddleWidth / 2);
