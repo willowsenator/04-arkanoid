@@ -1,6 +1,6 @@
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const Geometry = require('../js/geometry.js');
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import * as Geometry from '../js/geometry.js';
 
 test('clamp bounds a value within min/max', () => {
   assert.equal(Geometry.clamp(5, 0, 10), 5);
