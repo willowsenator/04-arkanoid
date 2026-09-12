@@ -1,6 +1,6 @@
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
-const Game = require('../js/game.js');
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import * as Game from '../js/game.js';
 
 function makeGame() {
   return Game.create({ canvasWidth: 640, canvasHeight: 480, lives: 3 });
