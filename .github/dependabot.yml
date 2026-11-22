@@ -20,3 +20,8 @@ updates:
         update-types: ["minor", "patch"]
         patterns:
           - "*"
+    ignore:
+      # The @types/node major tracks the Node major; stay on the LTS line CI runs (26) and move
+      # to the next LTS by hand rather than following non-LTS or pre-LTS majors.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
